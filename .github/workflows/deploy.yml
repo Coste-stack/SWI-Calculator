@@ -1,0 +1,31 @@
+name: .NET CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore source/swi.sln
+
+      - name: Build
+        run: dotnet build source/swi.sln --configuration Release
+
+      - name: Run tests
+        run: dotnet test source/swi.sln --configuration Release --no-build --verbosity normal
