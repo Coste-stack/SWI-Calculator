@@ -20,13 +20,8 @@ public class JsonHelper
         
         // Read operations
         using FileStream jsonStream = File.OpenRead(path);
-        var operations = await JsonSerializer.DeserializeAsync<Dictionary<string, Operation>>(jsonStream);
-        
-        if (operations == null) 
-        {
-            _logger.LogError("Failed to deserialize JSON from {Path}", path);
-            throw new InvalidDataException($"Failed to deserialize JSON from {path}");
-        }
+        var operations = await JsonSerializer.DeserializeAsync<Dictionary<string, Operation>>(jsonStream)
+            ?? new Dictionary<string, Operation>();
 
         _logger.LogInformation("Successfully read {Count} operations", operations.Count);
         return operations;
