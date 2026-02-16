@@ -2,14 +2,42 @@ using System.Text.Json.Serialization;
 
 public class Operation
 {
-    [JsonPropertyName("operator")]
     public string? Operator { get; set; }
-
-    [JsonPropertyName("value1")]
     public double? Value1 { get; set; }
-    
-    [JsonPropertyName("value2")]
     public double? Value2 { get; set; }
+
+    public Operation() : this(new OperationDto())
+    {
+    }
+
+    public Operation(OperationDto dto)
+    {
+        // Map dto to operation model
+        Operator = dto.Operator?.ToString();
+        Value1 = double.TryParse(dto.Value1?.ToString(), out var v1) ? v1 : null;
+        Value2 = double.TryParse(dto.Value2?.ToString(), out var v2) ? v2 : null;
+    }
+
+    public OperationType OperatorType
+    {
+        get
+        {
+            // Reject numeric strings
+            if (double.TryParse(Operator, out _)) 
+            {
+                return OperationType.Unknown;
+            }
+
+            // Check if supported operation
+            if (!string.IsNullOrWhiteSpace(Operator) &&
+                Enum.TryParse<OperationType>(Operator, true, out var opEnum))
+            {
+                return opEnum;
+            }
+            
+            return OperationType.Unknown;
+        }
+    }
 
     public override string ToString()
     {
@@ -21,18 +49,5 @@ public class Operation
         return Value2.HasValue
             ? $"{op}: {val1}, {Value2.Value}"
             : $"{op}: {val1}";
-    }
-
-    [JsonIgnore]
-    public OperationType OperatorType
-    {
-        get
-        {
-            if (Enum.TryParse<OperationType>(Operator, true, out var op))
-            {
-                return op;
-            }
-            return OperationType.Unknown;
-        }
     }
 }

@@ -46,7 +46,7 @@ public class OperationService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while executing operation: {OperationKey}", key);
+                _logger.LogWarning(ex, "Error while executing operation: {OperationKey}", key);
                 results[key] = "Error";
             }
         }

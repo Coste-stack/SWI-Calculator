@@ -14,11 +14,15 @@ public class SqrtOperationStrategy : OperationStrategyBase
         var a = operation.Value1;
         if (!a.HasValue)
         {
-            throw new ArgumentException();
+            _logger.LogWarning("Invalid {Operation} operation: missing operand. Value1: {A}",
+                SupportedOperator.ToString().ToLower(), "null");
+            throw new ArgumentException("Missing operand for sqrt operation.");
         }
         if (a.Value < 0)
         {
-            throw new ArgumentException();
+            _logger.LogWarning("Invalid {Operation} operation: negative operand. Value1: {A}",
+                SupportedOperator.ToString().ToLower(), a.Value);
+            throw new ArgumentException("Cannot calculate square root of a negative number.");
         }
 
         // Execute

@@ -15,7 +15,9 @@ public class SubOperationStrategy : OperationStrategyBase
         var b = operation.Value2;
         if (!a.HasValue || !b.HasValue)
         {
-            throw new ArgumentException();
+            _logger.LogWarning("Invalid {Operation} operation: missing operand(s). Value1: {A}, Value2: {B}",
+                SupportedOperator.ToString().ToLower(), a.HasValue ? a.Value.ToString() : "null", b.HasValue ? b.Value.ToString() : "null");
+            throw new ArgumentException("Missing operand(s) for sub operation.");
         }
 
         // Execute
