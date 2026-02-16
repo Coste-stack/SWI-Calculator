@@ -1,4 +1,3 @@
-
 using System.Text.Json.Serialization;
 
 public class Operation
@@ -22,5 +21,18 @@ public class Operation
         return Value2.HasValue
             ? $"{op}: {val1}, {Value2.Value}"
             : $"{op}: {val1}";
+    }
+
+    [JsonIgnore]
+    public OperationType OperatorType
+    {
+        get
+        {
+            if (Enum.TryParse<OperationType>(Operator, true, out var op))
+            {
+                return op;
+            }
+            return OperationType.Unknown;
+        }
     }
 }

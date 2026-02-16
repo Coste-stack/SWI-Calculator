@@ -11,16 +11,21 @@ public class Startup
             {
                 builder
                     .AddConsole()
-                    .SetMinimumLevel(LogLevel.Debug);   
+                    .SetMinimumLevel(LogLevel.Trace);
             })
             .AddSingleton<Application>()
             .AddSingleton<JsonHelper>()
             .AddSingleton<TxtHelper>()
+            .AddSingleton<IOperationStrategy, AddOperationStrategy>()
+            .AddSingleton<IOperationStrategy, SubOperationStrategy>()
+            .AddSingleton<IOperationStrategy, MulOperationStrategy>()
+            .AddSingleton<IOperationStrategy, SqrtOperationStrategy>()
+            .AddSingleton<OperationService>()
             .BuildServiceProvider();
 
         // Use logger
         var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
-        logger.LogDebug("Starting application");
+        logger.LogInformation("Starting application");
         
         // Use application
         var app = serviceProvider.GetRequiredService<Application>();

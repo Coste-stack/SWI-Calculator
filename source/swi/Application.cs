@@ -5,15 +5,18 @@ public class Application
     private readonly ILogger<Application> _logger;
     private readonly JsonHelper _jsonHelper;
     private readonly TxtHelper _txtHelper;
+    private readonly OperationService _operationService;
 
     public Application(
         ILogger<Application> logger, 
         JsonHelper jsonHelper, 
-        TxtHelper txtHelper)
+        TxtHelper txtHelper,
+        OperationService operationService)
     {
         _logger = logger;
         _jsonHelper = jsonHelper;
         _txtHelper = txtHelper;
+        _operationService = operationService;
     }
 
     public async Task RunAsync()
@@ -27,15 +30,18 @@ public class Application
         {
             // Read from json
             var operations = await _jsonHelper.ReadOperationsAsync(inputPath);
-            // Debug
-            foreach (var op in operations)
-            {
-                _logger.LogInformation("Read operation: {Op}", op);
-            }
+            // // Debug
+            // foreach (var op in operations)
+            // {
+            //     _logger.LogDebug("Read operation: {Op}", op);
+            // }
 
-            // Mock results
-            var results = operations.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Value1!.Value);
+            // // Mock results
+            // var results = operations.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Value1!.Value);
             
+            // Get results for operations
+            var results = _operationService.ExecuteOperations(operations);
+
             // Write results to txt
             await _txtHelper.WriteResultsAsync(outputPath, results);
         }
