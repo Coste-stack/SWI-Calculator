@@ -1,7 +1,33 @@
-public static class TxtHelper
+using Microsoft.Extensions.Logging;
+
+public class TxtHelper
 {
-    public static void WriteResults()
+    private readonly ILogger<TxtHelper> _logger;
+
+    public TxtHelper(ILogger<TxtHelper> logger)
     {
-        
+        _logger = logger;
+    }
+    
+    public async Task WriteResultsAsync(string path, Dictionary<string, double> operationResults)
+    {
+        _logger.LogInformation("Writing {Count} results to {Path}", operationResults.Count, path);
+
+        try
+        {
+            using var writer = new StreamWriter(path, append: false);
+            foreach (KeyValuePair<string, double> item in operationResults)
+            {
+                string line = $"{item.Key}: {item.Value}";
+                await writer.WriteLineAsync(line);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to write results to {Path}", path);
+            throw;
+        }
+
+        _logger.LogInformation("Successfully wrote results to {Path}", path);
     }
 }

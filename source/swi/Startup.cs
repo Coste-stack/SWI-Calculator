@@ -15,6 +15,7 @@ public class Startup
             })
             .AddSingleton<Application>()
             .AddSingleton<JsonHelper>()
+            .AddSingleton<TxtHelper>()
             .BuildServiceProvider();
 
         // Use logger
