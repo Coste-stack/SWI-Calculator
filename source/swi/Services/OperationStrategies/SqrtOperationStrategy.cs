@@ -4,8 +4,8 @@ public class SqrtOperationStrategy : OperationStrategyBase
 {
     public override OperationType SupportedOperator => OperationType.Sqrt;
 
-    protected override int MinOperands => 1;
-    protected override int? MaxOperands => 1;
+    public override int MinOperands => 1;
+    public override int? MaxOperands => 1;
 
     public SqrtOperationStrategy(ILogger<SqrtOperationStrategy> logger) : base(logger)
     {

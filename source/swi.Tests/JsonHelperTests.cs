@@ -4,21 +4,35 @@ namespace swi.Tests;
 
 public class JsonHelperTests
 {
-    [Fact]
-    public async Task ReadsOperationsFromFile()
+    private readonly JsonHelper _jsonHelper;
+    private readonly Mock<ILogger<JsonHelper>> _logger;
+
+    public JsonHelperTests()
     {
         // Arrange
-        var logger = new Mock<ILogger<JsonHelper>>();
-        var factory = new OperationFactory();
-        var jsonHelper = new JsonHelper(logger.Object, factory);
+        _logger = new Mock<ILogger<JsonHelper>>();
         
+        var strategies = new IOperationStrategy[]
+        {
+            new AddOperationStrategy(Mock.Of<ILogger<AddOperationStrategy>>()),
+            new SubOperationStrategy(Mock.Of<ILogger<SubOperationStrategy>>()),
+            new MulOperationStrategy(Mock.Of<ILogger<MulOperationStrategy>>()),
+            new SqrtOperationStrategy(Mock.Of<ILogger<SqrtOperationStrategy>>())
+        };
+        var factory = new OperationFactory(strategies);
+        _jsonHelper = new JsonHelper(_logger.Object, factory);
+    }
+
+    [Fact]
+    public async Task ReadsOperationsFromFile()
+    {  
         string tempFile = Path.GetTempFileName();
         await File.WriteAllTextAsync(tempFile, @"{
             ""obj1"": { ""operator"": ""add"", ""value1"": 2, ""value2"": 3 }
         }");
 
         // Act
-        var operations = await jsonHelper.ReadOperationsAsync(tempFile);
+        var operations = await _jsonHelper.ReadOperationsAsync(tempFile);
 
         // Assert
         Assert.Single(operations.Valid);
@@ -33,14 +47,10 @@ public class JsonHelperTests
     [Fact]
     public async Task ThrowsFileNotFoundException()
     {
-        // Arrange
-        var logger = new Mock<ILogger<JsonHelper>>();
-        var factory = new OperationFactory();
-        var jsonHelper = new JsonHelper(logger.Object, factory);
         string missingFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".json");
 
         // Act
-        var readOperations = () => jsonHelper.ReadOperationsAsync(missingFile);
+        var readOperations = () => _jsonHelper.ReadOperationsAsync(missingFile);
         
         // Assert
         await Assert.ThrowsAsync<FileNotFoundException>(readOperations);
@@ -49,16 +59,11 @@ public class JsonHelperTests
     [Fact]
     public async Task ThrowsInvalidJsonException()
     {
-        // Arrange
-        var logger = new Mock<ILogger<JsonHelper>>();
-        var factory = new OperationFactory();
-        var jsonHelper = new JsonHelper(logger.Object, factory);
- 
         string tempFile = Path.GetTempFileName();
         await File.WriteAllTextAsync(tempFile, @"{ invalid json }");
 
         // Act
-        var readOperations = () => jsonHelper.ReadOperationsAsync(tempFile);
+        var readOperations = () => _jsonHelper.ReadOperationsAsync(tempFile);
 
         // Assert
         await Assert.ThrowsAsync<JsonException>(readOperations);
@@ -69,11 +74,6 @@ public class JsonHelperTests
     [Fact]
     public async Task HandlesInvalidAndMissingFields()
     {
-        // Arrange
-        var logger = new Mock<ILogger<JsonHelper>>();
-        var factory = new OperationFactory();
-        var jsonHelper = new JsonHelper(logger.Object, factory);
-
         string tempFile = Path.GetTempFileName();
         string json = @"
         {
@@ -86,11 +86,11 @@ public class JsonHelperTests
         await File.WriteAllTextAsync(tempFile, json);
 
         // Act
-        var operations = await jsonHelper.ReadOperationsAsync(tempFile);
+        var operations = await _jsonHelper.ReadOperationsAsync(tempFile);
 
         // Assert
-        Assert.Single(operations.Valid);
-        Assert.Equal(4, operations.Failed.Count);
+        Assert.Equal(2, operations.Valid.Count);
+        Assert.Equal(3, operations.Failed.Count);
 
         File.Delete(tempFile);
     }

@@ -11,8 +11,8 @@ public abstract class OperationStrategyBase : IOperationStrategy
 
     public abstract OperationType SupportedOperator { get; }
 
-    protected abstract int MinOperands { get; }
-    protected virtual int? MaxOperands => null;
+    public abstract int MinOperands { get; }
+    public virtual int? MaxOperands => null;
 
     protected void ValidateOperands(Operation operation)
     {

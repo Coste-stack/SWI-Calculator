@@ -4,8 +4,8 @@ public class AddOperationStrategy : OperationStrategyBase
 {
     public override OperationType SupportedOperator => OperationType.Add;
 
-    protected override int MinOperands => 2;
-    protected override int? MaxOperands => null;
+    public override int MinOperands => 2;
+    public override int? MaxOperands => null;
 
     public AddOperationStrategy(ILogger<AddOperationStrategy> logger) : base(logger)
     {

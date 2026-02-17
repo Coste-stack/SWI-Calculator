@@ -2,15 +2,52 @@ using System.Text.Json;
 
 public class OperationFactory : IOperationFactory
 {
+    private readonly Dictionary<OperationType, IOperationStrategy> _strategyMap;
+
+    public OperationFactory(IEnumerable<IOperationStrategy> strategies)
+    {
+        _strategyMap = strategies.ToDictionary(s => s.SupportedOperator);
+    }
+
     // Map dto to operation model and validate
     public Operation Create(OperationDto dto)
     {
         var operatorType = ParseOperator(dto.Operator);
 
-        var operand1 = ParseOperand(dto.Value1, 1);
-        var operand2 = ParseOperand(dto.Value2, 2);
+        // Get strategy for min/max operands numbers
+        if (!_strategyMap.TryGetValue(operatorType, out var strategy))
+            throw new InvalidOperationException($"No strategy found for operator '{operatorType}'");
 
-        return new Operation(operatorType, new[] { operand1, operand2 });
+        var operands = new List<double>();
+        var operandElements = new JsonElement?[] { dto.Value1, dto.Value2 };
+        // Parse operands and check if they match min/max op numbers
+        for (int i = 0; i < operandElements.Length; i++)
+        {
+            var element = operandElements[i];
+
+            // Element missing
+            if (!element.HasValue || element.Value.ValueKind == JsonValueKind.Null)
+            {
+                // Not enough operands 
+                if (operands.Count < strategy.MinOperands)
+                {
+                    throw new InvalidOperationException($"Operand {i + 1} is missing");
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // Enough operands
+            if (strategy.MaxOperands.HasValue && operands.Count >= strategy.MaxOperands.Value)
+                break;
+            
+            // Parse and validate
+            operands.Add(ParseOperand(element, i + 1));
+        }
+
+        return new Operation(operatorType, operands);
     }
 
     private OperationType ParseOperator(JsonElement? element)

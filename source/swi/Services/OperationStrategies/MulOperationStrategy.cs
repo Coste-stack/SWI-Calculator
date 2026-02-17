@@ -4,8 +4,8 @@ public class MulOperationStrategy : OperationStrategyBase
 {
     public override OperationType SupportedOperator => OperationType.Mul;
 
-    protected override int MinOperands => 2;
-    protected override int? MaxOperands => null;
+    public override int MinOperands => 2;
+    public override int? MaxOperands => null;
     
     public MulOperationStrategy(ILogger<MulOperationStrategy> logger) : base(logger)
     {
