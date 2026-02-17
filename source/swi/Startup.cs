@@ -21,6 +21,7 @@ public class Startup
             .AddSingleton<IOperationStrategy, MulOperationStrategy>()
             .AddSingleton<IOperationStrategy, SqrtOperationStrategy>()
             .AddSingleton<OperationService>()
+            .AddSingleton<IOperationFactory, OperationFactory>()
             .BuildServiceProvider();
 
         // Use logger

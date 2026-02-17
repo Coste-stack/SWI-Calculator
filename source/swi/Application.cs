@@ -40,10 +40,16 @@ public class Application
             // var results = operations.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Value1!.Value);
             
             // Get results for operations
-            var results = _operationService.ExecuteOperations(operations);
+            var executed = _operationService.ExecuteOperations(operations.Valid);
+
+            // Merge errors into result set
+            foreach (var failedOp in operations.Failed)
+            {
+                executed[failedOp.Key] = failedOp.Value;
+            }
 
             // Write results to txt
-            await _txtHelper.WriteResultsAsync(outputPath, results);
+            await _txtHelper.WriteResultsAsync(outputPath, executed);
         }
         catch (Exception ex)
         {

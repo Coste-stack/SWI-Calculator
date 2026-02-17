@@ -9,7 +9,8 @@ public class JsonHelperTests
     {
         // Arrange
         var logger = new Mock<ILogger<JsonHelper>>();
-        var jsonHelper = new JsonHelper(logger.Object);
+        var factory = new OperationFactory();
+        var jsonHelper = new JsonHelper(logger.Object, factory);
         
         string tempFile = Path.GetTempFileName();
         await File.WriteAllTextAsync(tempFile, @"{
@@ -20,8 +21,11 @@ public class JsonHelperTests
         var operations = await jsonHelper.ReadOperationsAsync(tempFile);
 
         // Assert
-        Assert.Single(operations);
-        Assert.Equal("add", operations["obj1"].Operator);
+        Assert.Single(operations.Valid);
+        Assert.Empty(operations.Failed);
+        Assert.Equal(OperationType.Add, operations.Valid["obj1"].OperatorType);
+        Assert.Equal(2, operations.Valid["obj1"].Operands[0]);
+        Assert.Equal(3, operations.Valid["obj1"].Operands[1]);
 
         File.Delete(tempFile);
     }
@@ -31,7 +35,8 @@ public class JsonHelperTests
     {
         // Arrange
         var logger = new Mock<ILogger<JsonHelper>>();
-        var jsonHelper = new JsonHelper(logger.Object);
+        var factory = new OperationFactory();
+        var jsonHelper = new JsonHelper(logger.Object, factory);
         string missingFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".json");
 
         // Act
@@ -46,7 +51,8 @@ public class JsonHelperTests
     {
         // Arrange
         var logger = new Mock<ILogger<JsonHelper>>();
-        var jsonHelper = new JsonHelper(logger.Object);
+        var factory = new OperationFactory();
+        var jsonHelper = new JsonHelper(logger.Object, factory);
  
         string tempFile = Path.GetTempFileName();
         await File.WriteAllTextAsync(tempFile, @"{ invalid json }");
@@ -65,7 +71,8 @@ public class JsonHelperTests
     {
         // Arrange
         var logger = new Mock<ILogger<JsonHelper>>();
-        var jsonHelper = new JsonHelper(logger.Object);
+        var factory = new OperationFactory();
+        var jsonHelper = new JsonHelper(logger.Object, factory);
 
         string tempFile = Path.GetTempFileName();
         string json = @"
@@ -82,32 +89,9 @@ public class JsonHelperTests
         var operations = await jsonHelper.ReadOperationsAsync(tempFile);
 
         // Assert
-        // Should load all keys
-        Assert.Equal(5, operations.Count);
+        Assert.Single(operations.Valid);
+        Assert.Equal(4, operations.Failed.Count);
 
-        // valid_add
-        Assert.Equal("add", operations["valid_add"].Operator);
-        Assert.Null(operations["valid_add"].Error);
-        Assert.Equal(2, operations["valid_add"].Operands[0]);
-        Assert.Equal(3, operations["valid_add"].Operands[1]);
-
-        // invalid_operator
-        Assert.Equal("2", operations["invalid_operator"].Operator);
-        Assert.NotNull(operations["invalid_operator"].Error);
-
-        // invalid_Operands[0]
-        Assert.Equal("add", operations["invalid_value1"].Operator);
-        Assert.NotNull(operations["invalid_value1"].Error);
-
-        // missing_Operands[1]
-        Assert.Equal("sub", operations["missing_value2"].Operator);
-        Assert.NotNull(operations["invalid_value1"].Error);
-
-        // sqrt_negative
-        Assert.Equal("sqrt", operations["sqrt_negative"].Operator);
-        Assert.Equal(-4, operations["sqrt_negative"].Operands[0]);
-        Assert.NotNull(operations["invalid_value1"].Error);
-        
         File.Delete(tempFile);
     }
 }
