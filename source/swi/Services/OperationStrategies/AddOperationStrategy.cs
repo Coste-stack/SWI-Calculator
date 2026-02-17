@@ -17,7 +17,7 @@ public class AddOperationStrategy : OperationStrategyBase
         {
             _logger.LogWarning("Invalid {Operation} operation: missing operand(s). Value1: {A}, Value2: {B}",
                 SupportedOperator.ToString().ToLower(), a.HasValue ? a.Value.ToString() : "null", b.HasValue ? b.Value.ToString() : "null");
-            throw new ArgumentException("Missing operand(s) for add operation.");
+            throw new ArgumentException("Invalid operand");
         }
 
         // Execute

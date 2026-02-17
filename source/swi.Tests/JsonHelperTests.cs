@@ -94,7 +94,7 @@ public class JsonHelperTests
         Assert.Equal("2", operations["invalid_operator"].Operator);
         Assert.Equal(2, operations["invalid_operator"].Value1);
         Assert.Equal(8, operations["invalid_operator"].Value2);
-        Assert.Equal(OperationType.Unknown, operations["invalid_operator"].OperatorType);
+        Assert.Null(operations["invalid_operator"].OperatorType);
 
         // invalid_value1
         Assert.Equal("add", operations["invalid_value1"].Operator);

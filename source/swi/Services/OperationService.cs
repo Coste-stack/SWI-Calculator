@@ -12,11 +12,9 @@ public class OperationService
         _logger = logger;
         _strategyMap = strategies.ToDictionary(s => s.SupportedOperator);
     }
-    public Dictionary<string, string> ExecuteOperations(IReadOnlyDictionary<string, Operation> operations)
+    public Dictionary<string, Operation> ExecuteOperations(Dictionary<string, Operation> operations)
     {
         _logger.LogInformation("Starting execution of {Count} operations", operations.Count);
-
-        var results = new Dictionary<string, string>();
 
         foreach (var kvp in operations)
         {
@@ -25,16 +23,20 @@ public class OperationService
 
             _logger.LogDebug("Executing operation: {OperationKey}, {Operation}", key, operation);
 
-            // Check if supported operation
-            if (operation.OperatorType == OperationType.Unknown)
+            // Skip if operation already has an error
+            if (operation.Error != null) 
             {
-                results[key] = "Unknown operation";
+                _logger.LogWarning("Skipping operation due to error: {Error}", operation.Error);
+                continue;
             }
 
             // Match operation strategy
-            if (!_strategyMap.TryGetValue(operation.OperatorType, out var strategy))
+            var opType = operation.OperatorType;
+            if (!opType.HasValue || !_strategyMap.TryGetValue(opType.Value, out var strategy))
             {
-                _logger.LogWarning("No strategy found for operator '{Operator}'", operation.Operator);
+                var ex = new InvalidOperationException($"No strategy found for operator '{operation.Operator}'");
+                _logger.LogWarning(ex, "No strategy for operation '{OperationKey}'", key);
+                operation.Error = ex;
                 continue;
             }
 
@@ -42,16 +44,16 @@ public class OperationService
             try
             {
                 var result = strategy.Execute(operation);
-                results[key] = result.ToString();
+                operation.Result = result;
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Error while executing operation: {OperationKey}", key);
-                results[key] = "Error";
+                operation.Error = ex;
             }
         }
 
         _logger.LogInformation("Finished executing operations");
-        return results;
+        return operations;
     }
 }

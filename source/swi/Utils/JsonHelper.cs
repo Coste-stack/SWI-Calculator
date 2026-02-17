@@ -35,15 +35,7 @@ public class JsonHelper
         foreach (var kvp in rawOperations)
         {
             // Map raw strings to model types
-            try
-            {
-                operations[kvp.Key] = new Operation(kvp.Value);
-            }
-            catch
-            {
-                _logger.LogWarning("Failed to parse operation {Name}", kvp.Key);
-                operations[kvp.Key] = new Operation();
-            }
+            operations[kvp.Key] = new Operation(kvp.Value);
         }
 
         _logger.LogInformation("Successfully read {Count} operations", operations.Count);

@@ -16,13 +16,13 @@ public class SqrtOperationStrategy : OperationStrategyBase
         {
             _logger.LogWarning("Invalid {Operation} operation: missing operand. Value1: {A}",
                 SupportedOperator.ToString().ToLower(), "null");
-            throw new ArgumentException("Missing operand for sqrt operation.");
+            throw new ArgumentException("Invalid operand");
         }
         if (a.Value < 0)
         {
             _logger.LogWarning("Invalid {Operation} operation: negative operand. Value1: {A}",
                 SupportedOperator.ToString().ToLower(), a.Value);
-            throw new ArgumentException("Cannot calculate square root of a negative number.");
+            throw new ArgumentException("Cannot calculate square root of a negative number");
         }
 
         // Execute

@@ -9,16 +9,19 @@ public class TxtHelper
         _logger = logger;
     }
     
-    public async Task WriteResultsAsync(string path, Dictionary<string, string> operationResults)
+    public async Task WriteResultsAsync(string path, Dictionary<string, Operation> operations)
     {
-        _logger.LogInformation("Writing {Count} results to {Path}", operationResults.Count, path);
+        _logger.LogInformation("Writing {Count} results to {Path}", operations.Count, path);
 
         try
         {
             using var writer = new StreamWriter(path, append: false);
-            foreach (KeyValuePair<string, string> item in operationResults)
+            foreach (KeyValuePair<string, Operation> item in operations)
             {
-                string line = $"{item.Key}: {item.Value}";
+                string result = item.Value.Result?.ToString() 
+                                ?? item.Value.Error?.Message 
+                                ?? "Error";
+                string line = $"{item.Key}: {result}";
                 await writer.WriteLineAsync(line);
             }
         }

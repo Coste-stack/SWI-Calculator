@@ -17,7 +17,7 @@ public class MulOperationStrategy : OperationStrategyBase
         {
             _logger.LogWarning("Invalid {Operation} operation: missing operand(s). Value1: {A}, Value2: {B}",
                 SupportedOperator.ToString().ToLower(), a.HasValue ? a.Value.ToString() : "null", b.HasValue ? b.Value.ToString() : "null");
-            throw new ArgumentException("Missing operand(s) for mul operation.");
+            throw new ArgumentException("Invalid operand");
         }
 
         // Execute
