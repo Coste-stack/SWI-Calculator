@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.Extensions.Logging;
 
 public class TxtHelper
@@ -18,7 +19,7 @@ public class TxtHelper
             using var writer = new StreamWriter(path, append: false);
             foreach (KeyValuePair<string, Operation> item in operations)
             {
-                string result = item.Value.Result?.ToString() 
+                string result = item.Value.Result?.ToString(CultureInfo.InvariantCulture) 
                                 ?? item.Value.Error?.Message 
                                 ?? "Error";
                 string line = $"{item.Key}: {result}";

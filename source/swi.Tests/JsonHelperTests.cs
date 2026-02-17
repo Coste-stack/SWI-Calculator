@@ -87,29 +87,26 @@ public class JsonHelperTests
 
         // valid_add
         Assert.Equal("add", operations["valid_add"].Operator);
-        Assert.Equal(2, operations["valid_add"].Value1);
-        Assert.Equal(3, operations["valid_add"].Value2);
+        Assert.Null(operations["valid_add"].Error);
+        Assert.Equal(2, operations["valid_add"].Operands[0]);
+        Assert.Equal(3, operations["valid_add"].Operands[1]);
 
         // invalid_operator
         Assert.Equal("2", operations["invalid_operator"].Operator);
-        Assert.Equal(2, operations["invalid_operator"].Value1);
-        Assert.Equal(8, operations["invalid_operator"].Value2);
-        Assert.Null(operations["invalid_operator"].OperatorType);
+        Assert.NotNull(operations["invalid_operator"].Error);
 
-        // invalid_value1
+        // invalid_Operands[0]
         Assert.Equal("add", operations["invalid_value1"].Operator);
-        Assert.Null(operations["invalid_value1"].Value1);
-        Assert.Equal(8, operations["invalid_value1"].Value2);
+        Assert.NotNull(operations["invalid_value1"].Error);
 
-        // missing_value2
+        // missing_Operands[1]
         Assert.Equal("sub", operations["missing_value2"].Operator);
-        Assert.Equal(5, operations["missing_value2"].Value1);
-        Assert.Null(operations["missing_value2"].Value2);
+        Assert.NotNull(operations["invalid_value1"].Error);
 
         // sqrt_negative
         Assert.Equal("sqrt", operations["sqrt_negative"].Operator);
-        Assert.Equal(-4, operations["sqrt_negative"].Value1);
-        Assert.Null(operations["sqrt_negative"].Value2);
+        Assert.Equal(-4, operations["sqrt_negative"].Operands[0]);
+        Assert.NotNull(operations["invalid_value1"].Error);
         
         File.Delete(tempFile);
     }

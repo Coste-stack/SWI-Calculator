@@ -1,8 +1,9 @@
+using System.Text.Json;
+
 public class Operation
 {
     public string? Operator { get; set; }
-    public double? Value1 { get; set; }
-    public double? Value2 { get; set; }
+    public List<double> Operands { get; } = new List<double>();
 
     public double? Result { get; set; }
 
@@ -26,34 +27,67 @@ public class Operation
     // Map dto to operation model and validate
     public Operation(OperationDto dto)
     {
-        Operator = dto.Operator?.ToString();
+        Operator = ParseOperator(dto.Operator);
 
-        // Try parsing operands
-        bool value1Parsed = double.TryParse(dto.Value1?.ToString(), out var v1);
-        bool value2Parsed = double.TryParse(dto.Value2?.ToString(), out var v2);
+        var operand1 = ParseOperand(dto.Value1, 1);
+        if (Error != null) return;
+        Operands.Add(operand1);
 
-        Value1 = value1Parsed ? v1 : null;
-        Value2 = value2Parsed ? v2 : null;
+        var operand2 = ParseOperand(dto.Value2, 2);
+        if (Error != null) return;
+        Operands.Add(operand2);
+    }
 
-        // Reject numeric operator
-        if (double.TryParse(Operator, out _)) 
+    private string? ParseOperator(JsonElement? element)
+    {
+        // Check if exists
+        if (element == null || element.Value.ValueKind == JsonValueKind.Null)
+            return null;
+
+        switch (element.Value.ValueKind)
         {
-            Error = new InvalidOperationException("Operator cannot be numeric");
-            return;
+            case JsonValueKind.String:
+                return element.Value.GetString();
+            case JsonValueKind.Number:
+                // Reject numeric operator
+                Error = new InvalidOperationException("Operator cannot be numeric");
+                return null;
+            default:
+                // Unsupported operator type
+                Error = new InvalidOperationException("Unsupported operator");
+                return null;
+        }
+    }
+
+    private double ParseOperand(JsonElement? element, int key)
+    {
+        // Check if exists
+        if (element == null || element.Value.ValueKind == JsonValueKind.Null)
+        {
+            Error = new InvalidOperationException($"Operand {key} is missing");
+            return double.NaN;
         }
 
-        // Check for empty operator
-        if (string.IsNullOrWhiteSpace(Operator))
+        switch (element.Value.ValueKind)
         {
-            Error = new InvalidOperationException("Operator is missing");
-            return;
-        }
-
-        // Check for empty both operands
-        if (Value1 == null && Value2 == null)
-        {
-            Error = new InvalidOperationException("Both operands missing or invalid");
-            return;
+            case JsonValueKind.Number:
+                return element.Value.GetDouble();
+            case JsonValueKind.String:
+                // Parse to double
+                var str = element.Value.GetString();
+                if (!double.TryParse(
+                    str, 
+                    System.Globalization.NumberStyles.Float | System.Globalization.NumberStyles.AllowThousands, 
+                    System.Globalization.CultureInfo.InvariantCulture, 
+                    out var value))
+                {
+                    Error = new InvalidOperationException($"Operand {key} is invalid");
+                    return double.NaN;
+                }
+                return value;
+            default:
+                Error = new InvalidOperationException($"Operand {key} is invalid");
+                return double.NaN;
         }
     }
 
@@ -82,12 +116,9 @@ public class Operation
     public override string ToString()
     {
         var op = Operator ?? "Unknown";
-        var val1 = Value1.HasValue 
-            ? Value1.Value.ToString() 
-            : "Unknown";
+        var operandString = string.Join(", ",
+            Operands.Select(o => o.ToString() ?? "Unknown"));
 
-        return Value2.HasValue
-            ? $"{op}: {val1}, {Value2.Value}"
-            : $"{op}: {val1}";
+        return $"{op}: {operandString}";
     }
 }

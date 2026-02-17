@@ -1,68 +1,41 @@
 {
-   "valid_add":{
-      "operator":"add",
-      "value1":2,
-      "value2":3
-   },
-   "valid_sub":{
-      "operator":"sub",
-      "value1":5,
-      "value2":2
-   },
-   "valid_mul":{
-      "operator":"mul",
-      "value1":3,
-      "value2":4
-   },
-   "valid_sqrt":{
-      "operator":"sqrt",
-      "value1":16
-   },
-   "operator_case_variant":{
-      "operator":"AdD",
-      "value1":10,
-      "value2":5
-   },
-   "missing_operator":{
-      "value1":1,
-      "value2":2
-   },
-   "unknown_operator":{
-      "operator":"pow",
-      "value1":2,
-      "value2":8
-   },
-   "invalid_operator":{
-      "operator":2,
-      "value1":2,
-      "value2":8
-   },
-   "invalid_value1":{
-      "operator":"add",
-      "value1":"aaa",
-      "value2":8
-   },
-   "missing_value1":{
-      "operator":"add",
-      "value2":5
-   },
-   "missing_value2_for_binary":{
-      "operator":"mul",
-      "value1":2
-   },
-   "non_numeric_value":{
-      "operator":"add",
-      "value1":"x",
-      "value2":2
-   },
-   "sqrt_negative":{
-      "operator":"sqrt",
-      "value1":-4
-   },
-   "binary_with_extra_field":{
-      "operator":"add",
-      "value1":1,
-      "value2":2,
-      "note":"extra"
-   }
+  "valid_add": { "operator": "add", "value1": 2, "value2": 3 },
+  "valid_sub": { "operator": "sub", "value1": 5, "value2": 2 },
+  "valid_mul": { "operator": "mul", "value1": 3, "value2": 4 },
+  "valid_sqrt_with_both": { "operator": "sqrt", "value1": 16, "value2": 0 },
+
+  "operator_case_variant": { "operator": "AdD", "value1": 10, "value2": 5 },
+
+  "missing_operator": { "value1": 1, "value2": 2 },
+  "whitespace_operator": { "operator": "   ", "value1": 1, "value2": 2 },
+  "operator_null": { "operator": null, "value1": 1, "value2": 2 },
+
+  "unknown_operator": { "operator": "pow", "value1": 2, "value2": 8 },
+
+  "numeric_operator": { "operator": 123, "value1": 2, "value2": 8 },
+
+  "invalid_value1": { "operator": "add", "value1": "abc", "value2": 8 },
+  "invalid_value2": { "operator": "add", "value1": 1, "value2": "xyz" },
+
+  "missing_value1": { "operator": "add", "value2": 5 },
+  "missing_value2_for_binary": { "operator": "mul", "value1": 2 },
+
+  "non_numeric_boolean": { "operator": "add", "value1": true, "value2": 2 },
+  "non_numeric_array": { "operator": "add", "value1": [1], "value2": 2 },
+  "non_numeric_object": { "operator": "add", "value1": { "x": 1 }, "value2": 2 },
+
+  "empty_object": { },
+
+  "scientific_notation": { "operator": "add", "value1": "1e3", "value2": "2.5e2" },
+
+  "value1_NaN": { "operator": "add", "value1": "NaN", "value2": 1 },
+  "value2_Infinity": { "operator": "add", "value1": 1, "value2": "Infinity" },
+
+  "very_large_numbers": { "operator": "mul", "value1": 1e308, "value2": 1e308 },
+
+  "decimal_values": { "operator": "add", "value1": 0.1, "value2": 0.2 },
+
+  "extra_field_ignored": { "operator": "add", "value1": 1, "value2": 2, "extra": "ignored" },
+
+  "sqrt_missing_value2": { "operator": "sqrt", "value1": 16 }
 }
