@@ -25,7 +25,7 @@ public class JsonHelper
         }
 
         // Open stream
-        using FileStream jsonStream = File.OpenRead(path);
+        await using FileStream jsonStream = File.OpenRead(path);
         // Handle case
         var options = new JsonSerializerOptions()
         {

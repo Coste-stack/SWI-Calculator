@@ -17,7 +17,7 @@ public class TxtHelper
 
         try
         {
-            using var writer = new StreamWriter(path, append: false);
+            await using var writer = new StreamWriter(path, append: false);
             foreach (var (key, result) in operations)
             {
                 string line = $"{key}: {result}";
