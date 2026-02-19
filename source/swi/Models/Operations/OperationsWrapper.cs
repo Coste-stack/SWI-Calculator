@@ -1,3 +1,5 @@
+namespace swi.Models.Operations;
+
 public class Operations
 {
     public Dictionary<string, Operation> Valid { get; } = new();

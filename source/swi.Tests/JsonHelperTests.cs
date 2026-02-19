@@ -1,3 +1,7 @@
+using swi.Utils;
+using swi.Services.Operations.OperationStrategies;
+using swi.Services.Operations;
+using swi.Models.Operations;
 using System.Text.Json;
 
 namespace swi.Tests;

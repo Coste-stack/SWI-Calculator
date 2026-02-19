@@ -1,5 +1,8 @@
+using swi.Models.Operations;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
+
+namespace swi.Services.Operations;
 
 public class OperationService
 {

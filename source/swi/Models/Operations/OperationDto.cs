@@ -1,6 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+namespace swi.Models.Operations;
+
 public class OperationDto
 {
     [JsonPropertyName("operator")]

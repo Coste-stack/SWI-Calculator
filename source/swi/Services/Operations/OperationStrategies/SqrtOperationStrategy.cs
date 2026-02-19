@@ -1,4 +1,7 @@
+using swi.Models.Operations;
 using Microsoft.Extensions.Logging;
+
+namespace swi.Services.Operations.OperationStrategies;
 
 public class SqrtOperationStrategy : OperationStrategyBase
 {

@@ -1,3 +1,5 @@
+namespace swi.Models.Operations;
+
 public class Operation
 {
     public OperationType OperatorType { get; set; }

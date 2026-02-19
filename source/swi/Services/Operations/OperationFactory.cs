@@ -1,4 +1,7 @@
+using swi.Models.Operations;
 using System.Text.Json;
+
+namespace swi.Services.Operations;
 
 public class OperationFactory : IOperationFactory
 {

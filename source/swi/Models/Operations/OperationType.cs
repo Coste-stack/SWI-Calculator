@@ -1,3 +1,5 @@
+namespace swi.Models.Operations;
+
 public enum OperationType
 {
     Add,

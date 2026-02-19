@@ -1,5 +1,6 @@
-using System.Globalization;
 using Microsoft.Extensions.Logging;
+
+namespace swi.Utils;
 
 public class TxtHelper
 {

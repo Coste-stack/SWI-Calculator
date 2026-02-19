@@ -1,3 +1,6 @@
+using swi.Models.Operations;
+namespace swi.Services.Operations;
+
 public interface IOperationStrategy
 {
     OperationType SupportedOperator { get; }
