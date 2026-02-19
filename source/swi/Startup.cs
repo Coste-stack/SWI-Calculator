@@ -32,7 +32,7 @@ public class Startup
         // Use logger
         var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
         logger.LogInformation("Starting application");
-        
+
         // Use application
         var app = serviceProvider.GetRequiredService<Application>();
         await app.RunAsync();

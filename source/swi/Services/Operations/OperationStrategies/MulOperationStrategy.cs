@@ -9,7 +9,7 @@ public class MulOperationStrategy : OperationStrategyBase
 
     public override int MinOperands => 2;
     public override int? MaxOperands => null;
-    
+
     public MulOperationStrategy(ILogger<MulOperationStrategy> logger) : base(logger)
     {
     }
@@ -17,7 +17,7 @@ public class MulOperationStrategy : OperationStrategyBase
     public override double Execute(Operation operation)
     {
         ValidateOperands(operation);
-        
+
         return operation.Operands.Aggregate((a, b) => a * b);
     }
 }

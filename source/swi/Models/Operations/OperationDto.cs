@@ -10,7 +10,7 @@ public class OperationDto
 
     [JsonPropertyName("value1")]
     public JsonElement? Value1 { get; set; }
-    
+
     [JsonPropertyName("value2")]
     public JsonElement? Value2 { get; set; }
 

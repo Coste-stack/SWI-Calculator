@@ -12,7 +12,11 @@ public class OperationFactory : IOperationFactory
         _strategyMap = strategies.ToDictionary(s => s.SupportedOperator);
     }
 
-    // Map dto to operation model and validate
+    /// <summary>
+    /// Map dto to operation model and validate
+    /// </summary>
+    /// <param name="dto">Dto containing json fields</param>
+    /// <returns>Created operation object mapped from dto</returns>
     public Operation Create(OperationDto dto)
     {
         var operatorType = ParseOperator(dto.Operator);
@@ -36,16 +40,13 @@ public class OperationFactory : IOperationFactory
                 {
                     throw new InvalidOperationException($"Operand {i + 1} is missing");
                 }
-                else
-                {
-                    break;
-                }
+                break;
             }
 
             // Enough operands
             if (strategy.MaxOperands.HasValue && operands.Count >= strategy.MaxOperands.Value)
                 break;
-            
+
             // Parse and validate
             operands.Add(ParseOperand(element, i + 1));
         }

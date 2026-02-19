@@ -40,7 +40,7 @@ public class OperationService
             try
             {
                 var result = strategy.Execute(operation);
-                results[key] = result.ToString(CultureInfo.InvariantCulture);;
+                results[key] = result.ToString(CultureInfo.InvariantCulture);
             }
             catch (Exception ex)
             {

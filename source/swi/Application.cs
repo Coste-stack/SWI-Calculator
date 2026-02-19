@@ -12,8 +12,8 @@ public class Application
     private readonly OperationService _operationService;
 
     public Application(
-        ILogger<Application> logger, 
-        JsonHelper jsonHelper, 
+        ILogger<Application> logger,
+        JsonHelper jsonHelper,
         TxtHelper txtHelper,
         OperationService operationService)
     {
@@ -42,7 +42,7 @@ public class Application
 
             // // Mock results
             // var results = operations.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Value1!.Value);
-            
+
             // Get results for operations
             var executed = _operationService.ExecuteOperations(operations.Valid);
 

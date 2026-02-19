@@ -10,7 +10,7 @@ public class TxtHelper
     {
         _logger = logger;
     }
-    
+
     public async Task WriteResultsAsync(string path, Dictionary<string, string> operations)
     {
         _logger.LogInformation("Writing {Count} results to {Path}", operations.Count, path);

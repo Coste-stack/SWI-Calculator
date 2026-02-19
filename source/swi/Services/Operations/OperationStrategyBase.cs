@@ -20,12 +20,14 @@ public abstract class OperationStrategyBase : IOperationStrategy
     protected void ValidateOperands(Operation operation)
     {
         if (operation.Operands.Count < MinOperands)
-            throw new ArgumentException(
-                $"{SupportedOperator} requires at least {MinOperands} operand(s)");
+        {
+            throw new ArgumentException($"{SupportedOperator} requires at least {MinOperands} operand(s)");
+        }
 
         if (MaxOperands.HasValue && operation.Operands.Count > MaxOperands.Value)
-            throw new ArgumentException(
-                $"{SupportedOperator} allows at most {MaxOperands.Value} operand(s)");
+        {
+            throw new ArgumentException($"{SupportedOperator} allows at most {MaxOperands.Value} operand(s)");
+        }
     }
 
     public abstract double Execute(Operation operation);

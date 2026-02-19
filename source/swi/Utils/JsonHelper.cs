@@ -15,7 +15,7 @@ public class JsonHelper
         _logger = logger;
         _operationFactory = operationFactory;
     }
-    
+
     public async Task<Operations> ReadOperationsAsync(string path)
     {
         if (!File.Exists(path))
@@ -23,7 +23,7 @@ public class JsonHelper
             _logger.LogError("File not found: {Path}", path);
             throw new FileNotFoundException($"Input file not found: {path}");
         }
-        
+
         // Open stream
         using FileStream jsonStream = File.OpenRead(path);
         // Handle case
@@ -31,7 +31,7 @@ public class JsonHelper
         {
             PropertyNameCaseInsensitive = true
         };
-        
+
         // Read operations
         var rawOperations = await JsonSerializer.DeserializeAsync<Dictionary<string, OperationDto>>(jsonStream, options)
             ?? new Dictionary<string, OperationDto>();
