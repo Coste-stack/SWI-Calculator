@@ -1,0 +1,16 @@
+root = true
+
+[*.cs]
+
+# Enable nullable warnings strongly
+dotnet_diagnostic.CS8600.severity = warning
+dotnet_diagnostic.CS8602.severity = warning
+
+# Enable ALL Roslynator rules
+dotnet_analyzer_diagnostic.category-roslynator.severity = warning
+
+# Enforce style
+dotnet_style_require_accessibility_modifiers = always:warning
+dotnet_style_qualification_for_field = false:warning
+dotnet_style_qualification_for_property = false:warning
+dotnet_style_qualification_for_method = false:warning
